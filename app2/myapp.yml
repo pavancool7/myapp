@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: loginform
+  labels:
+    app: login
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: login
+  template:
+    metadata:
+      labels:
+        app: login
+    spec:
+      containers:
+      - name: myapp
+        image: pavancool7/loginform:1.0
+        ports:
+        - containerPort: 9999
+        env:
+        - name: MONGO_URL
+          value: mongodb://admin:password@myapp
+          
+---
+apiVersion: v1
+kind: Service
+metadata: 
+  name: loginform-service
+spec:
+  selector:
+    app: login
+  type: LoadBalancer
+  ports:
+  - name: loginform
+    protocol: TCP
+    port: 9999
+    targetPort: 9999
+    nodePort: 30002
